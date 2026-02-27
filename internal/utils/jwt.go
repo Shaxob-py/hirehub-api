@@ -42,27 +42,30 @@ func verifyToken(tokenString string) error {
 
 	return nil
 }
-
 func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	var u user.ModelUser
-	json.NewDecoder(r.Body).Decode(&u)
-	fmt.Printf("The user request value %v", u)
 
-	if u.Email == "Chek" && u.Password == "123456" {
-		tokenString, err := CreateToken(u.Email)
-		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			fmt.Errorf("No email found")
-		}
-		w.WriteHeader(http.StatusOK)
-		fmt.Fprint(w, tokenString)
+	if err := json.NewDecoder(r.Body).Decode(&u); err != nil {
+		http.Error(w, "Invalid JSON", http.StatusBadRequest)
 		return
-	} else {
-		w.WriteHeader(http.StatusUnauthorized)
-		fmt.Fprint(w, "Invalid credentials")
 	}
+
+	if u.Email != "Chek" || u.Password != "123456" {
+		http.Error(w, "Invalid credentials", http.StatusUnauthorized)
+		return
+	}
+
+	tokenString, err := CreateToken(u.Email)
+	if err != nil {
+		http.Error(w, "Failed to create token", http.StatusInternalServerError)
+		return
+	}
+
+	json.NewEncoder(w).Encode(map[string]string{
+		"token": tokenString,
+	})
 }
 
 func ProtectedHandler(w http.ResponseWriter, r *http.Request) {

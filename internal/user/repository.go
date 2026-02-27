@@ -65,3 +65,11 @@ WHERE id = $4`
 
 	return &user, nil
 }
+
+func (u *User) DeleteUser(userId string) error {
+	query := `DELETE FROM users WHERE id = $1`
+	if _, err := u.db.Exec(query, userId); err != nil {
+		return err
+	}
+	return nil
+}
