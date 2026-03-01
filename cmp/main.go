@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/go-chi/chi/v5"
 	"github.com/joho/godotenv"
 )
 
@@ -16,6 +17,10 @@ func main() {
 	port := os.Getenv("PORT")
 	databaseURL := os.Getenv("DATABASE_URL")
 
+	if port == "" {
+		port = "8000"
+	}
+
 	db, err := database.Connect(databaseURL)
 	if err != nil {
 		log.Fatal(err)
@@ -23,6 +28,9 @@ func main() {
 	defer db.Close()
 
 	dbTask := user.NewUser(db)
-	handler := user.NewUserHandler(dbTask)
+	r := chi.NewRouter()
+
+	userHandler := user.NewUserHandler(dbTask) // if you have constructor
+	user.UserRouter(r, userHandler)
 
 }

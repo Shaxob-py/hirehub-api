@@ -3,9 +3,9 @@ package user
 import (
 	"ShopAPI/internal/utils"
 	"encoding/json"
-	"net/http"
-
 	"github.com/go-chi/chi/v5"
+	"net/http"
+	"strings"
 )
 
 type UserHandler struct {
@@ -21,6 +21,11 @@ func NewUserHandler(store *User) *UserHandler {
 func (h *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 	var inp ModelCreateUser
 	if err := json.NewDecoder(r.Body).Decode(&inp); err != nil {
+		utils.ResponseError(w, http.StatusBadRequest, "Bad Request")
+		return
+	}
+
+	if inp.Skill == "" || inp.About == "" || !strings.HasSuffix(inp.Email, "gmail.com") {
 		utils.ResponseError(w, http.StatusBadRequest, "Bad Request")
 		return
 	}
@@ -72,6 +77,7 @@ func (h *UserHandler) GetAllUsers(w http.ResponseWriter, r *http.Request) {
 	users, err := h.store.GetAllUsers("")
 	if err != nil {
 		utils.ResponseError(w, http.StatusInternalServerError, err.Error())
+		return
 	}
 	utils.ResponseWithJson(w, http.StatusOK, users)
 }
