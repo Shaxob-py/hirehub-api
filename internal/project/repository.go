@@ -12,7 +12,7 @@ func NewProject(db *sqlx.DB) *Project {
 	}
 }
 
-func (p *Project) ProjectFindByID(id int) (*ModelProject, error) {
+func (p *Project) ProjectFindByID(id string) (*ModelProject, error) {
 	var project ModelProject
 	query := `SELECT * FROM project WHERE id = $1`
 	if err := p.db.Get(&project, query, id); err != nil {
@@ -71,9 +71,9 @@ func (p *Project) ProjectUpdate(project ModelUpdateProject) (*ModelUpdateProject
 	return &projects, nil
 }
 
-func (p *Project) ProjectDelete(project ModelProject) error {
+func (p *Project) ProjectDelete(id string) error {
 	query := `DELETE FROM project WHERE id = $1`
-	_, err := p.db.Exec(query, project.ID)
+	_, err := p.db.Exec(query, id)
 	if err != nil {
 		return err
 	}

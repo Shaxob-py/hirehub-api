@@ -25,6 +25,7 @@ type ModelUserResponse struct {
 
 type ModelCreateUser struct {
 	Name     string `json:"name"`
+	Role     string `json:"role"`
 	Email    string `json:"email"`
 	About    string `json:"about"`
 	Skill    string `json:"skill"`
@@ -32,7 +33,6 @@ type ModelCreateUser struct {
 }
 
 type ModelUpdateUser struct {
-	ID    string  `db:"id"`
 	Name  *string `json:"name"`
 	Skill *string `json:"skill"`
 	About *string `json:"about"`
