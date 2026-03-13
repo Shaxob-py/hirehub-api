@@ -37,3 +37,8 @@ type ModelUpdateUser struct {
 	Skill *string `json:"skill"`
 	About *string `json:"about"`
 }
+
+type ModelUserLogin struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}

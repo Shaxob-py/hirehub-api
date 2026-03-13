@@ -1,0 +1,214 @@
+basePath: /
+definitions:
+  user.ModelCreateUser:
+    properties:
+      about:
+        type: string
+      email:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+      role:
+        type: string
+      skill:
+        type: string
+    type: object
+  user.ModelUpdateUser:
+    properties:
+      about:
+        type: string
+      name:
+        type: string
+      skill:
+        type: string
+    type: object
+  user.ModelUser:
+    properties:
+      createdAt:
+        type: string
+      email:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+      role:
+        type: string
+      skill:
+        type: string
+      updatedAt:
+        type: string
+    type: object
+  user.ModelUserLogin:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
+host: localhost:8000
+info:
+  contact: {}
+  description: API for freelance platform
+  title: Shop API
+  version: "1.0"
+paths:
+  /api/v1/auth/login:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Login
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/user.ModelUserLogin'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: Login user
+      tags:
+      - auth
+  /api/v1/auth/register:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: User data
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/user.ModelCreateUser'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/user.ModelCreateUser'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Register new user
+      tags:
+      - auth
+  /api/v1/users:
+    get:
+      description: Get list of all users
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/user.ModelUser'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get all users
+      tags:
+      - users
+  /api/v1/users/{id}:
+    delete:
+      description: Delete user by ID
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Delete user
+      tags:
+      - users
+    get:
+      description: Get user by ID
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user.ModelUser'
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get user
+      tags:
+      - users
+    put:
+      consumes:
+      - application/json
+      description: Update user by ID
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Updated user data
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/user.ModelUpdateUser'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user.ModelUser'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Update user
+      tags:
+      - users
+swagger: "2.0"

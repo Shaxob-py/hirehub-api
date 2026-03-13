@@ -1,6 +1,8 @@
 package user
 
 import (
+	"errors"
+
 	"github.com/jmoiron/sqlx"
 )
 
@@ -82,6 +84,20 @@ func (u *User) DeleteUser(userId string) error {
 	query := `DELETE FROM users WHERE id = $1`
 	if _, err := u.db.Exec(query, userId); err != nil {
 		return err
+	}
+	return nil
+}
+
+func (u *User) CheckUserEmail(req ModelUserLogin) error {
+	var user ModelUserLogin
+
+	query := "SELECT  email, password FROM users WHERE email = $1"
+	if err := u.db.Get(&user, query, req.Email); err != nil {
+		return err
+	}
+
+	if !CheckPasswordHash(req.Password, user.Password) {
+		return errors.New("invalid password or email")
 	}
 	return nil
 }
